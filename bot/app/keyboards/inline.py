@@ -160,7 +160,11 @@ def build_start_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
 
     builder.row(
-        InlineKeyboardButton(text=ButtonLabels.FIND_DOCTOR, callback_data="find_doctor")
+        InlineKeyboardButton(text="🔍 Найти врача", callback_data="find_doctor")
+    )
+    
+    builder.row(
+        InlineKeyboardButton(text="🤖 ИИ Ассистент", callback_data="ai_search")
     )
 
     builder.row(InlineKeyboardButton(text=ButtonLabels.HELP, callback_data="help"))

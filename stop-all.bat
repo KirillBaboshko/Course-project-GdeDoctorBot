@@ -1,12 +1,27 @@
 @echo off
-echo Stopping all GdeDoctor services...
+chcp 65001 >nul
+title GdeDoctor Bot - Остановка всех процессов
+echo.
+echo ========================================
+echo   Остановка GdeDoctor Bot
+echo ========================================
+echo.
 
-echo Stopping Python processes...
+echo Останавливаем процессы Python...
 taskkill /f /im python.exe 2>nul
-
-echo Stopping uvicorn processes...
-taskkill /f /im uvicorn.exe 2>nul
+if errorlevel 1 (
+    echo   Процессы Python не найдены
+) else (
+    echo   ✓ Процессы Python остановлены
+)
 
 echo.
-echo ✓ All services stopped
+echo Ожидание завершения процессов...
+timeout /t 2 /nobreak >nul
+
+echo.
+echo ========================================
+echo   Все процессы остановлены
+echo ========================================
+echo.
 pause

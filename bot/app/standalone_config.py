@@ -20,6 +20,9 @@ class StandaloneBotConfig:
     # Yandex Maps (optional)
     YANDEX_API_KEY: str = os.getenv("YANDEX_API_KEY", "")
     
+    # GigaChat (optional)
+    GIGACHAT_CREDENTIALS: str = os.getenv("GIGACHAT_CREDENTIALS", "")
+    
     # Database
     DATABASE_PATH: str = os.getenv("DATABASE_PATH", str(Path(__file__).parent.parent.parent / "medical_data.db"))
     
@@ -42,6 +45,10 @@ class StandaloneBotConfig:
         # Yandex API key is optional for basic functionality
         if not self.YANDEX_API_KEY:
             print("⚠️  YANDEX_API_KEY not set. Maps functionality will be disabled.")
+        
+        # GigaChat is optional
+        if not self.GIGACHAT_CREDENTIALS:
+            print("⚠️  GIGACHAT_CREDENTIALS not set. AI Assistant will be disabled.")
 
 
 config = StandaloneBotConfig()

@@ -11,6 +11,7 @@ class SearchStates(StatesGroup):
     selecting_specialty = State()
     selecting_hospital = State()
     selecting_doctor = State()
+    ai_searching = State()  # AI-powered search state
 
 
 @dataclass

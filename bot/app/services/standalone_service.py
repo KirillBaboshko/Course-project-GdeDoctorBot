@@ -113,11 +113,15 @@ class StandaloneDataService:
         try:
             if specialty_id:
                 # Get hospitals that have doctors with this specialty
+                # Use GROUP BY to avoid duplicates when hospital has multiple addresses
                 cursor = conn.execute(
-                    """SELECT DISTINCT h.id, h.name
+                    """SELECT h.id, h.name, MIN(a.full_address) as full_address
                        FROM hospitals h
                        JOIN doctor_work_placements dwp ON h.id = dwp.hospital_id
+                       LEFT JOIN hospital_addresses ha ON h.id = ha.hospital_id
+                       LEFT JOIN addresses a ON ha.address_id = a.id
                        WHERE dwp.specialty_id = ?
+                       GROUP BY h.id, h.name
                        ORDER BY h.name LIMIT ? OFFSET ?""",
                     (specialty_id, limit, skip)
                 )
@@ -130,12 +134,17 @@ class StandaloneDataService:
                 )
             else:
                 cursor = conn.execute(
-                    "SELECT id, name FROM hospitals ORDER BY name LIMIT ? OFFSET ?",
+                    """SELECT h.id, h.name, MIN(a.full_address) as full_address 
+                       FROM hospitals h
+                       LEFT JOIN hospital_addresses ha ON h.id = ha.hospital_id
+                       LEFT JOIN addresses a ON ha.address_id = a.id
+                       GROUP BY h.id, h.name
+                       ORDER BY h.name LIMIT ? OFFSET ?""",
                     (limit, skip)
                 )
                 cursor_count = conn.execute("SELECT COUNT(*) FROM hospitals")
             
-            hospitals = [{"id": row[0], "name": row[1]} for row in cursor.fetchall()]
+            hospitals = [{"id": row[0], "name": row[1], "address": row[2] if len(row) > 2 else None} for row in cursor.fetchall()]
             total = cursor_count.fetchone()[0]
             
             return {

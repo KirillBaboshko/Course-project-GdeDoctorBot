@@ -331,6 +331,15 @@ async def back_to_doctors(callback: CallbackQuery, state: FSMContext):
         data = await state.get_data()
         hospital_id = data.get("hospital_id")
         specialty_id = data.get("specialty_id")
+        using_ai_search = data.get("using_ai_search", False)
+
+        # If using AI search, redirect to AI handler
+        if using_ai_search:
+            logger.info("Redirecting to AI hospitals list")
+            # Import here to avoid circular dependency
+            from app.handlers.ai_search import back_to_ai_hospitals
+            await back_to_ai_hospitals(callback, state)
+            return
 
         if not hospital_id or not specialty_id:
             await callback.answer("Ошибка: данные поиска потеряны", show_alert=True)
@@ -391,6 +400,15 @@ async def back_to_hospitals(callback: CallbackQuery, state: FSMContext):
     try:
         data = await state.get_data()
         specialty_id = data.get("specialty_id")
+        using_ai_search = data.get("using_ai_search", False)
+
+        # If using AI search, redirect to AI handler
+        if using_ai_search:
+            logger.info("Redirecting to AI hospitals list")
+            # Import here to avoid circular dependency
+            from app.handlers.ai_search import back_to_ai_hospitals
+            await back_to_ai_hospitals(callback, state)
+            return
 
         if not specialty_id:
             await callback.answer("Ошибка: специальность не выбрана", show_alert=True)
